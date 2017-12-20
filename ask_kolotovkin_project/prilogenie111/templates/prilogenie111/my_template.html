@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>AskKolotovkin</title>
+    <style>
+        body {
+            background-color: #5CCCCC;
+            font-family: Geneva, Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            color: white;
+        }
+
+        textarea {
+            min-width: 300px;
+            min-height: 100px;
+            max-width: 500px;
+            max-height: 250px;
+        }
+
+        #boxLeft {
+            position: absolute;
+            margin-left: 0px;
+            margin-top: 100px;
+            width: 700px;
+            padding: 20px;
+            background-color: #009999;
+            border-radius: 5px;
+            min-height: 320px;
+        }
+
+        #boxRight {
+            position: absolute;
+            margin-left: 780px;
+            margin-top: 100px;
+            width: 200px;
+            padding: 20px;
+            background-color: #009999;
+            border-radius: 5px;
+            height: 320px;
+        }
+
+        #boxTop {
+            position: absolute;
+            margin-left: 0px;
+            margin-top: 0px;
+            width: 980px;
+            padding: 20px;
+            background-color: #009999;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        #centerBox {
+            padding: 30px;
+            margin: 0 auto;
+            width: 1020px;
+        }
+
+        #pageHeader, #popularTemsHeader, #themesList, #commentsListHeader {
+            text-shadow: 1px 1px 2px black, 0 0 1em black;
+        }
+
+        form {
+            padding: 5px;
+        }
+
+        .printClass {
+            padding: 10px;
+            background-color: #187699;
+            border-radius: 5px;
+        }
+
+        .myListClass {
+            padding: 17px;
+            width: 650px;
+            background-color: #187699;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .myListClassNoCursor {
+            padding: 17px;
+            width: 650px;
+            background-color: #187699;
+            border-radius: 10px;
+        }
+
+        .selectMessageClass {
+            background-color: #45ccb4;
+            padding: 10px;
+            color: black;
+            border-radius: 10px;
+        }
+
+        .textField {
+            font-family: Geneva, Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            color: black;
+            padding: 8px;
+            border: 1px solid black;
+            outline: none;
+            width: 200px;
+            border-radius: 5px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+        }
+
+        .textField:focus {
+            box-shadow: 3px 3px 10px rgb(11, 17, 65);
+        }
+
+        .btn {
+            font-family: Geneva, Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            color: black;
+            background-color: #5CCCCC;
+            padding: 20px;
+            border: 2px solid black;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            cursor: pointer;
+            background-color: #45ccb4;
+        }
+
+        .myLink {
+            color: bisque;
+            font-size: 20px;
+        }
+
+        .myLinkUnd {
+            color: bisque;
+            font-size: 20px;
+            padding: 5px;
+            border: 1px solid bisque;
+            border-radius: 5px;
+        }
+
+        .myLinkUnd:hover {
+            cursor: pointer;
+            color: #74ff41;
+        }
+
+        .myLink:hover {
+            cursor: pointer;
+            color: #74ff41;
+        }
+
+        .hor {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+    "use strict";
+
+    function elem(s) {
+        return document.getElementById(s.toString());
+    }
+
+    function htmlentities(s){
+        s = s + "";
+        let div = document.createElement('div');
+        let text = document.createTextNode(s);
+        div.appendChild(text);
+        return div.innerHTML;
+    }
+
+    function setPageHeader(s) {
+        const value = s.toString();
+        document.title = value;
+        elem("pageHeader").innerHTML = value;
+    }
+    
+    function exitFromSite() {
+        window.location = "/outfromsite/" + Math.random();
+    }
+
+    function authorizePage() {
+        window.location = "/";
+    }
+
+    function registrtePage() {
+        window.location = "/checkin/";
+    }
+
+    function goToTheme() {
+        window.location = "/theme/" + Math.random();
+    }
+
+    function isUserAuthorized() {
+        const query = "/getMyLogin/" + Math.random();
+        console.log("Control user auth: " + query);
+        let r = new XMLHttpRequest();
+        r.open("GET", query, true);
+        r.setRequestHeader("Content-Type","text/plain;charset=UTF-8");
+        r.send(null);
+        r.onreadystatechange = function() {
+            if(r.readyState === 4 && r.status === 200) {
+                const result = r.responseText + "";
+                r = null;
+                if(result === "Гость") {
+                    let s = "";
+                    s = s + "<span style = 'text-shadow: 1px 1px 2px black, 0 0 1em black;'>Пользователь: " + result + "</span>";
+                    s = s + "<span class = 'hor'></span>";
+                    s = s + "<span onclick = 'authorizePage()' class = 'myLink'>Авторизация</span>";
+                    s = s + "<span class = 'hor'></span>";
+                    s = s + "<span onclick = 'registrtePage()' class = 'myLink'>Регистрация</span>";
+                    s = s + "<span class = 'hor'></span><span class = 'hor'></span>";
+                    s = s + "<span onclick = 'goToTheme()' class = 'myLinkUnd'>Список обсуждаемых тем</span>";
+                    elem("boxTop").innerHTML += s;
+                } else {
+                    let s = "";
+                    s = s + "<span style = 'text-shadow: 1px 1px 2px black, 0 0 1em black;'>Пользователь: " + result + "</span>";
+                    s = s + "<span class = 'hor'></span>";
+                    s = s + "<span onclick = 'exitFromSite()' class = 'myLink'>Выход</span>";
+                    s = s + "<span class = 'hor'></span><span class = 'hor'></span>";
+                    s = s + "<span onclick = 'goToTheme()' class = 'myLinkUnd'>Список обсуждаемых тем</span>";
+                    elem("boxTop").innerHTML += s;
+                }
+            }
+        }
+    }
+</script>
+
+<div id = "centerBox">
+    <div id = "boxTop" align = "center"></div>
+
+    <div id = "boxLeft">
+        <h2 id = "pageHeader">AskKolotovkin</h2>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div id = "boxRight">
+         <h2 id = "popularTemsHeader">Популярные темы</h2>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+{% extends 'prilogenie111/my_template.html' %}
+{% block content %}
+
+<div style = "padding-top: 25px;"></div>
+
+<h3>Формулировка темы</h3>
+<span id = "questionContent"></span>
+
+<div style = "padding-top: 5px;"></div>
+
+<form id = "f" action = "/adding_comment/" method = "POST">
+    {% csrf_token %}
+    <p>Ваш комментарий</p>
+    <textarea spellcheck = 'false' autocomplete = 'off' class = "textField" placeholder = "Ваш комментарий" maxlength="300" name = "a"></textarea>
+    <input type = "text" name = "b" id = "themeNumberField" hidden>
+    <div style = "padding-top: 30px"></div>
+    <input type = "submit" class = "btn" value = "Добавить комментарий">
+    <div style = "padding-top: 30px"></div>
+    <div style = "padding-top: 30px"></div>
+</form>
+
+<hr>
+<div style = "padding-top: 15px"></div>
+<h2 id = "commentsListHeader">Список комментариев</h2>
+<div style = "padding-top: 30px"></div>
+
+<span id = "listOfCommentsBlock"></span>
+
+<script>
+    window.onload = function() {
+        isUserAuthorized();
+
+        setPageHeader("Обсуждение темы");
+        elem("f").action = elem("f").action + Math.random();
+
+        getTheme();
+        getThemeComments();
+    };
+
+    let numberThemeValue = -1;
+
+    function getThemeComments() {
+        const number = numberThemeValue;
+        const query = "/get_comments_of_theme/?b=" + number;
+        let r = new XMLHttpRequest();
+        r.open("GET", query, true);
+        r.setRequestHeader("Content-Type","text/plain;charset=UTF-8");
+        r.send(null);
+        r.onreadystatechange = function() {
+            if (r.readyState === 4 && r.status === 200) {
+                let bigString = "";
+                const result = r.responseText + "";
+                r = null;
+                let mass = [];
+                mass = result.split("@@@@@@@@@@@@@@@@@@_________________~~~~~~~~~~~~~~~~");
+                for(let i = 0; i < mass.length; i++) {
+                    const element = mass[i] + "";
+                    if(element.length !== 0) {
+                        let arr = [];
+                        arr = element.split("@@@@@_____~~~~~~");
+                        let user = htmlentities(arr[0]);
+                        let content = htmlentities(arr[1]);
+                        bigString = bigString + "<div class = 'printClass'>" + "Пользователь: <b>" + user + "</b><div style = 'padding-top: 22px'></div>" +content + "</div>" + "<div style = 'padding-top: 30px'></div>";
+                    }
+                }
+                elem('listOfCommentsBlock').innerHTML = bigString + "";
+            }
+        }
+    }
+
+    function getTheme() {
+        const len = (window.location + "").split("/").length;
+        const val = (window.location + "").split("/")[len-1];
+        elem('themeNumberField').value = val;
+        numberThemeValue = parseInt(val);
+        localStorage.setItem("val", val);
+
+        const query = "/getThemeInfo/?a=" + val;
+        let r = new XMLHttpRequest();
+        r.open("GET", query, true);
+        r.setRequestHeader("Content-Type","text/plain;charset=UTF-8");
+        r.send(null);
+        r.onreadystatechange = function() {
+            if (r.readyState === 4 && r.status === 200) {
+                const result = r.responseText + "";
+                let mass = [];
+                mass = result.split("@@@@@_____~~~~~~");
+                let user = htmlentities(mass[0]);
+                let content = htmlentities(mass[1]);
+                let s = "";
+                s = s + "<div class = 'myListClassNoCursor'>";
+                s = s + "Пользователь: <b>" + user + "</b>";
+                s = s + "<div style = 'padding-top: 15px'></div>";
+                s = s + "<div class = 'selectMessageClass'>";
+                s = s + content;
+                s = s + "</div></div><div style = 'padding-top: 30px'></div>";
+                elem("questionContent").innerHTML = s;
+            }
+        }
+    }
+</script>
+
+{% endblock %}

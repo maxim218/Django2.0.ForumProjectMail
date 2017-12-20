@@ -1,0 +1,39 @@
+{% extends 'prilogenie111/my_template.html' %}
+{% block content %}
+
+<form id = "f" action = "/authorizeusermethod/" method = "POST">
+    {% csrf_token %}
+    <p>Логин</p>
+    <input type = "text" spellcheck = 'false' autocomplete = 'off' class = "textField" maxlength = "15" placeholder = "Ваш логин" name = "a">
+    <p>Пароль</p>
+    <input type = "password" spellcheck = 'false' autocomplete = 'off' class = "textField" maxlength = "15" placeholder = "Ваш пароль" name = "b">
+    <div style = "padding-top: 30px"></div>
+    <input type = "submit" class = "btn" value = "Войти в аккаунт">
+    <div style = "padding-top: 30px"></div>
+    <span class = "myLink" onclick = "window.location = '/checkin/';">Регистрация</span>
+</form>
+
+<div style = "padding-top: 30px"></div>
+<h2 id = "message"></h2>
+
+<script>
+    window.onload = function() {
+        isUserAuthorized();
+
+        setPageHeader("Авторизация");
+        elem("f").action = elem("f").action + Math.random();
+
+        const value = location.search + "";
+        if(value === "?x=no_correct_input") {
+            elem("message").innerHTML = "Некорректный ввод.";
+        }
+        if(value === "?x=authorize_of_user_yes") {
+            elem("message").innerHTML = "Авторизация прошла успешно.";
+        }
+        if(value === "?x=authorize_of_user_yes_no") {
+            elem("message").innerHTML = "Неверный логин или пароль.";
+        }
+    }
+</script>
+
+{% endblock %}

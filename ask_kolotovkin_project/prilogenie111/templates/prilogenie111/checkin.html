@@ -1,0 +1,39 @@
+{% extends 'prilogenie111/my_template.html' %}
+{% block content %}
+
+<form id = "f" action = "/registration/" method = "POST">
+    {% csrf_token %}
+    <p>Логин</p>
+    <input type = "text" spellcheck = 'false' autocomplete = 'off' class = "textField" maxlength = "15" placeholder = "Ваш логин" name = "a">
+    <p>Пароль</p>
+    <input type = "password" spellcheck = 'false' autocomplete = 'off' class = "textField" maxlength = "15" placeholder = "Ваш пароль" name = "b">
+    <div style = "padding-top: 30px"></div>
+    <input type = "submit" class = "btn" value = "Зарегистрироваться">
+    <div style = "padding-top: 30px"></div>
+    <span class = "myLink" onclick = "window.location = '/';">Авторизация</span>
+</form>
+
+<div style = "padding-top: 30px"></div>
+<h2 id = "message"></h2>
+
+<script>
+    window.onload = function() {
+        isUserAuthorized();
+
+        setPageHeader("Регистрация");
+        elem("f").action = elem("f").action + Math.random();
+
+        const value = location.search + "";
+        if(value === "?x=registration_in_system_yes") {
+            elem("message").innerHTML = "Регистрация прошла успешно.";
+        }
+        if(value === "?x=registration_in_system_no") {
+            elem("message").innerHTML = "Пользователь с таким логином уже есть в БД.";
+        }
+        if(value === "?x=no_correct_input") {
+            elem("message").innerHTML = "Некорректный ввод.";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'prilogenie111/my_template.html' %}
+{% block content %}
+
+<form id = "f" action = "/adding_theme/" method = "POST">
+    {% csrf_token %}
+    <p>Формулировка темы</p>
+    <textarea spellcheck = 'false' autocomplete = 'off' class = "textField" placeholder = "Формулировка темы" maxlength="300" name = "a"></textarea>
+    <div style = "padding-top: 30px"></div>
+    <input type = "submit" class = "btn" value = "Добавить тему обсуждения">
+    <div style = "padding-top: 30px"></div>
+</form>
+
+<h2 id = "message"></h2>
+
+<div style = "padding-top: 15px"></div>
+<hr>
+<div style = "padding-top: 15px"></div>
+
+<h2 id = "themesList">Список обсуждаемых тем</h2>
+<div style = "padding-top: 30px"></div>
+
+{% for record in my_records_arr %}
+    <div id = "theme_{{ record.pk|linebreaksbr }}" class = "myListClass" onclick="goToTheme(this)">
+        Пользователь: <b>{{ record.theme_user}}</b>
+        <div style = "padding-top: 15px"></div>
+        <div class = "selectMessageClass">
+            {{ record.theme_article}}
+        </div>
+    </div>
+    <div style = "padding-top: 30px"></div>
+{% endfor %}
+
+
+<script>
+    window.onload = function() {
+        isUserAuthorized();
+
+        setPageHeader("Темы обсуждения");
+        elem("f").action = elem("f").action + Math.random();
+
+        const value = location.search + "";
+
+        if(value === "?x=input_field_is_empty") {
+            elem("message").innerHTML = "Поле ввода пусто.";
+        }
+
+        if(value === "?x=add_theme_complete") {
+            elem("message").innerHTML = "Тема успешно добавлена.";
+        }
+
+        if(value === "?x=user_is_not_autentificated_in_system") {
+            elem("message").innerHTML = "Гости не могут добавлять темы.";
+        }
+    };
+
+    function goToTheme(element) {
+        const name = element.id;
+        let mass = [];
+        mass = name.split("_");
+        const number = mass[1];
+        window.location = "/discuss/" + number;
+    }
+</script>
+
+{% endblock %}
